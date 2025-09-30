@@ -1,13 +1,6 @@
 import { useState } from "react";
+import type { Employee } from "./EmployeeCard";
 
-interface Employee {
-  id: number;
-  fullName: string;
-  code: number;
-  email: string;
-  position: string;
-  phone: string;
-}
 
 interface TableProps {
   employees: Employee[];
@@ -15,7 +8,6 @@ interface TableProps {
   onDelete?: (id: number) => void;
   onView?: (employee: Employee) => void;
   loading?: boolean;
-  className?: string;
 }
 
 export const Table = ({
@@ -24,7 +16,6 @@ export const Table = ({
   onDelete,
   onView,
   loading = false,
-  className = "",
 }: TableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -40,7 +31,7 @@ export const Table = ({
   if (loading) {
     return (
       <div
-        className={`bg-white rounded-lg shadow-sm border border-gray-200 p-8 ${className}`}
+        className={`bg-white rounded-lg shadow-sm border border-gray-200 p-8`}
       >
         <div className="flex justify-center items-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -52,7 +43,7 @@ export const Table = ({
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-sm border border-gray-200 ${className}`}
+      className={`bg-white rounded-lg shadow-sm border border-gray-200 `}
     >
       {/* Table */}
       <div className="overflow-x-auto">
@@ -97,7 +88,7 @@ export const Table = ({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="text-sm font-mono text-blue-600">
-                    #{employee.code}
+                    {employee.code}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">

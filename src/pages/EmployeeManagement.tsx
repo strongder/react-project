@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import { Search } from "../components/Search";
 import { Filter, type FilterState } from "../components/Filter";
 import { EmployeeList } from "../components/EmployeeList";
-import { type Employee } from "../components/EmployeCard";
+import { type Employee } from "../components/EmployeeCard";
 import { Table } from "../components/Table";
 import { Button, Modal } from "antd";
 
@@ -99,11 +99,11 @@ export const EmployeeManagement = () => {
   });
 
   const handleAddEmployee = () => {
-    // Tạo employee rỗng cho Add mode
+    // Tạo employee rỗng cho Add 
     setSelectedEmployee({
       id: 0, // Sẽ được gán lại trong handleFormModalOk
       fullName: "",
-      code: 0,
+      code: "",
       email: "",
       phone: "",
       position: "",
