@@ -9,7 +9,6 @@ import { Table } from "../components/Table";
 import { Button, Modal } from "antd";
 
 export const EmployeeManagement = () => {
-  // Modal states
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isAddMode, setIsAddMode] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -17,9 +16,8 @@ export const EmployeeManagement = () => {
     null
   );
 
-  // Main states
-  const [displayCard, setDisplayCard] = useState(true);
-  const [displayTable, setDisplayTable] = useState(false);
+  const [displayCard, setDisplayCard] = useState(false);
+  const [displayTable, setDisplayTable] = useState(true);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -34,9 +32,57 @@ export const EmployeeManagement = () => {
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
-      // Use mock data as fallback
     } finally {
       setLoading(false);
+    }
+  };
+  const updateEmployee = async (updatedEmployee: Employee) => {
+    try {
+      const response = await axios.put(
+        `https://68db5b6123ebc87faa32b28e.mockapi.io/api/employee/${updatedEmployee.id}`,
+        updatedEmployee
+      );
+      if (response.status === 200) {
+        setEmployees((prev) =>
+          prev.map((emp) =>
+            emp.id === updatedEmployee.id ? response.data : emp
+          )
+        );
+        alert("Cập nhật thông tin thành công!");
+      }
+    } catch (error) {
+      console.error("Error updating employee:", error);
+      alert("Cập nhật thông tin thất bại. Vui lòng thử lại.");
+    }
+  };
+
+  const addEmployee = async (newEmployee: Employee) => {
+    try {
+      const response = await axios.post(
+        "https://68db5b6123ebc87faa32b28e.mockapi.io/api/employee",
+        newEmployee
+      );
+      if (response.status === 201) {
+        setEmployees((prev) => [response.data, ...prev]);
+        alert("Thêm nhân viên thành công!");
+      }
+    } catch (error) {
+      console.error("Error adding employee:", error);
+      alert("Thêm nhân viên thất bại. Vui lòng thử lại.");
+    }
+  };
+  const delelteEmployee = async (id: number) => {
+    try {
+      const response = await axios.delete(
+        `https://68db5b6123ebc87faa32b28e.mockapi.io/api/employee/${id}`
+      );
+      if (response.status === 200) {
+        setEmployees((prev) => prev.filter((emp) => emp.id !== id));
+        alert("Xóa nhân viên thành công!");
+      }
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+      alert("Xóa nhân viên thất bại. Vui lòng thử lại.");
     }
   };
 
@@ -54,8 +100,7 @@ export const EmployeeManagement = () => {
       `Bạn có chắc chắn muốn xóa ${employeeName}?`
     );
     if (confirmed) {
-      setEmployees(employees.filter((emp) => emp.id !== id));
-      alert(`Đã xóa ${employeeName} thành công!`);
+      delelteEmployee(id);
     }
   };
   const handleFilterChange = (newFilters: FilterState) => {
@@ -90,7 +135,7 @@ export const EmployeeManagement = () => {
       employee.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       employee.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       employee.phone.includes(searchTerm) ||
-      employee.code.toString().includes(searchTerm);
+      employee.code.toLowerCase().includes(searchTerm);
 
     const matchesPosition =
       !filters.position ||
@@ -99,7 +144,7 @@ export const EmployeeManagement = () => {
   });
 
   const handleAddEmployee = () => {
-    // Tạo employee rỗng cho Add 
+    // Tạo employee rỗng cho Add
     setSelectedEmployee({
       id: 0, // Sẽ được gán lại trong handleFormModalOk
       fullName: "",
@@ -128,19 +173,9 @@ export const EmployeeManagement = () => {
     }
 
     if (isEditMode) {
-      setEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === selectedEmployee.id ? selectedEmployee : emp
-        )
-      );
-      alert("Cập nhật thông tin thành công!");
+      updateEmployee(selectedEmployee);
     } else {
-      const newEmployee = {
-        ...selectedEmployee,
-        id: Date.now(),
-      };
-      setEmployees((prev) => [newEmployee, ...prev]);
-      alert("Thêm nhân viên thành công!");
+      addEmployee(selectedEmployee);
     }
 
     setIsAddMode(false);
@@ -183,7 +218,7 @@ export const EmployeeManagement = () => {
           </div>
           <button
             onClick={handleAddEmployee}
-            className="flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 !text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105"
+            className="flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 !text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 cursor-pointer"
             style={{ color: "white" }}
           >
             <svg

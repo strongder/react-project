@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Employee } from "./EmployeeCard";
-
+import { Pagination } from "antd";
 
 interface TableProps {
   employees: Employee[];
@@ -22,12 +22,10 @@ export const Table = ({
 
   // Pagination
   const totalItems = employees.length;
-  const totalPages = Math.ceil(totalItems / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const currentEmployees = employees.slice(startIndex, endIndex);
 
- 
   if (loading) {
     return (
       <div
@@ -42,9 +40,7 @@ export const Table = ({
   }
 
   return (
-    <div
-      className={`bg-white rounded-lg shadow-sm border border-gray-200 `}
-    >
+    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 `}>
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
@@ -54,14 +50,10 @@ export const Table = ({
                 Avatar
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <div className="flex items-center">
-                  Mã NV
-                </div>
+                <div className="flex items-center">Mã NV</div>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <div className="flex items-center">
-                  Họ tên
-                </div>
+                <div className="flex items-center">Họ tên</div>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Email
@@ -80,7 +72,12 @@ export const Table = ({
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {currentEmployees.map((employee) => (
-              <tr key={employee.id} className="hover:bg-gray-50">
+              <tr
+                key={employee.id}
+                className={`hover:bg-gray-50 ${
+                  employee.position === "Manager" ? "bg-yellow-50" : ""
+                }`}
+              >
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-medium">
                     {employee.fullName.charAt(0).toUpperCase()}
@@ -107,7 +104,7 @@ export const Table = ({
                   </span>
                 </td>
 
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className={` px-6 py-4 whitespace-nowrap`}>
                   <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
                     {employee.position}
                   </span>
@@ -117,7 +114,7 @@ export const Table = ({
                   <div className="flex justify-end space-x-2">
                     <button
                       onClick={() => onView?.(employee)}
-                      className="text-blue-500 hover:text-blue-600 p-1 rounded"
+                      className="text-blue-500 hover:text-blue-600 p-1 rounded cursor-pointer"
                       title="Xem chi tiết"
                     >
                       <svg
@@ -142,7 +139,7 @@ export const Table = ({
                     </button>
                     <button
                       onClick={() => onEdit?.(employee)}
-                      className="text-green-500 hover:text-green-600 p-1 rounded"
+                      className="text-green-500 hover:text-green-600 p-1 rounded cursor-pointer"
                       title="Chỉnh sửa"
                     >
                       <svg
@@ -169,7 +166,7 @@ export const Table = ({
                           onDelete?.(employee.id);
                         }
                       }}
-                      className="text-red-500 hover:text-red-600 p-1 rounded"
+                      className="text-red-500 hover:text-red-600 p-1 rounded cursor-pointer"
                       title="Xóa"
                     >
                       <svg
@@ -196,65 +193,24 @@ export const Table = ({
 
       {/* Pagination */}
       <div className="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <span className="text-sm text-gray-700">
-              Hiển thị {startIndex + 1} - {Math.min(endIndex, totalItems)} của{" "}
-              {totalItems} nhân viên
-            </span>
-            <select
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value));
-                setCurrentPage(1);
-              }}
-              className="ml-4 px-3 py-1 border border-gray-300 rounded text-sm"
-            > <option value={5}>5 / trang</option>
-              <option value={10}>10 / trang</option>
-              <option value={20}>20 / trang</option>
-              <option value={50}>50 / trang</option>
-            </select>
-          </div>
-          <div className="flex space-x-2">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="px-3 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-            >
-              Trước
-            </button>
-
-            {/* Page Numbers */}
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              const pageNumber = currentPage <= 3 ? i + 1 : currentPage - 2 + i;
-              if (pageNumber > totalPages) return null;
-
-              return (
-                <button
-                  key={pageNumber}
-                  onClick={() => setCurrentPage(pageNumber)}
-                  className={`px-3 py-2 text-sm border rounded-md ${
-                    currentPage === pageNumber
-                      ? "bg-blue-600 text-white border-blue-600"
-                      : "border-gray-300 hover:bg-gray-50"
-                  }`}
-                >
-                  {pageNumber}
-                </button>
-              );
-            })}
-
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-              className="px-3 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-            >
-              Sau
-            </button>
-          </div>
-        </div>
+        <Pagination
+          align="end"
+          current={currentPage}
+          total={totalItems}
+          pageSize={pageSize}
+          showSizeChanger={true}
+          onChange={(page, size) => {
+            setCurrentPage(page);
+            if (size !== pageSize) {
+              setPageSize(size);
+            }
+          }}
+          showTotal={(total, range) =>
+            `${range[0]}-${range[1]} của ${total} nhân viên`
+          }
+          showQuickJumper={true}
+          pageSizeOptions={["5", "10", "20", "50"]}
+        />
       </div>
     </div>
   );
