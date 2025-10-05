@@ -6,6 +6,7 @@ import { Filter, type FilterState } from "../components/Filter";
 import { EmployeeList } from "../components/EmployeeList";
 import { type Employee } from "../components/EmployeeCard";
 import { Table } from "../components/Table";
+import EmployeeFooter from "../components/EmployeeFooter";
 import { Button, Modal } from "antd";
 
 export const EmployeeManagement = () => {
@@ -410,6 +411,9 @@ export const EmployeeManagement = () => {
           </div>
         </div>
       </Modal>
+
+      {/* Employee Footer */}
+      <EmployeeFooter totalEmployees={employees.length} />
     </>
   );
 };
