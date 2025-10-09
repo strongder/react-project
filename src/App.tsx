@@ -1,5 +1,5 @@
 
-import { EmployeeManagement } from "./pages/EmployeeManagement";
+import { EmployeeManagement } from "./pages/EmployeePage";
 function App() {
   return (
     <EmployeeManagement/>
