@@ -11,6 +11,7 @@ import { EmployeeDetail } from "../components/Employee/EmployeeDetail";
 import AddIcon from "../assets/icon/AddIcon.svg";
 import { validateEmail } from "../utils/validate";
 import EmployeeStatic from "../components/Employee/EmployeeStatic";
+import EmployeeFooter from "../components/Employee/EmployeeFooter";
 interface EmployeeFilterState {
   position?: string;
 }
@@ -211,7 +212,6 @@ export const EmployeeManagement = () => {
     const { name, value } = e.target;
     if (selectedEmployee) {
       setSelectedEmployee({ ...selectedEmployee, [name]: value });
-      console.log("check", selectedEmployee);
     }
   };
 
@@ -307,7 +307,7 @@ export const EmployeeManagement = () => {
           )}
         </div>
       </div>
-
+      {/* View Modal - Xem chi tiết nhân viên */}
       <div>
         <EmployeeDetail
           isOpen={isViewModalOpen}
@@ -413,6 +413,7 @@ export const EmployeeManagement = () => {
           </div>
         </div>
       </Modal>
+      <EmployeeFooter totalEmployees={employees.length} />
     </>
   );
 };
