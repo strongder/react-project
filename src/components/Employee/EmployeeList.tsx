@@ -1,5 +1,6 @@
 import React from 'react';
-import { EmployeeCard, type Employee } from './EmployeeCard';
+import type { Employee } from "../../models";
+import  EmployeeCard from './EmployeeCard';
 
 interface EmployeeListProps {
   employees: Employee[];
@@ -7,15 +8,19 @@ interface EmployeeListProps {
   onDelete?: (id: number) => void;
   onView?: (employee: Employee) => void;
   loading?: boolean;
+  searchTearm?: string;
 }
 
-export const EmployeeList: React.FC<EmployeeListProps> = ({
+const EmployeeListComponent: React.FC<EmployeeListProps> = ({
   employees,
   onEdit,
   onDelete,
   onView,
   loading = false,
+  searchTearm = "",
 }) => {
+
+  console.log("🔍 EmployeeList render:", { employeesCount: employees.length, loading });
   if (loading) {
     return (
       <div className={`flex justify-center items-center py-12`}>
@@ -49,8 +54,11 @@ export const EmployeeList: React.FC<EmployeeListProps> = ({
           onDelete={onDelete}
           onView={onView}
           highlight={employee.position?.toLowerCase() === "manager"}
+          searchTearm={searchTearm}
         />
       ))}
     </div>
   );
 };
+
+export const EmployeeList = React.memo(EmployeeListComponent);
