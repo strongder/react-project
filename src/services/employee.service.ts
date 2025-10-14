@@ -1,5 +1,8 @@
-// src/services/employeeService.ts
-import { api } from "@/lib/http";
+import type { Employee } from "../pages/employee/models";
+import type { SearchRequest, SearchResponse } from "../shared/models";
+
+import { api } from "./api";
+
 
 export const employeeService = {
   async getAll() {
@@ -7,30 +10,23 @@ export const employeeService = {
     return res.data;
   },
 
-  async search(params: {
-    page?: number;
-    size?: number;
-    key?: string;
-    value?: string;
-    sortBy?: string;
-    sortDir?: "asc" | "desc";
-  }) {
-    const { page = 1, size = 10, key, value, sortBy, sortDir } = params;
+  async search(data: SearchRequest): Promise<SearchResponse<Employee>> {
+    const { page = 1, size = 10, filters = {}, sortBy, sortDir } = data;
 
     const allData = await this.getAll();
 
-    let filtered = allData;
-    if (key && value) {
-      filtered = filtered.filter((item: any) => {
-        const fieldValue = String(item[key] ?? "").toLowerCase();
-        return fieldValue.includes(value.toLowerCase());
-      });
-    }
-
+    
+    let filtered = allData.filter((item: Employee) => {
+      return Object.entries(filters).every(([key, value]) => {
+      if (!value) return true;
+      const fieldValue = String(item[key as keyof Employee] ?? "").toLowerCase();
+      return fieldValue.includes(String(value).toLowerCase());
+    });
+    });
     if (sortBy) {
-      filtered = filtered.slice().sort((a: any, b: any) => {
-        const A = a?.[sortBy];
-        const B = b?.[sortBy];
+      filtered = filtered.slice().sort((a: Employee, b: Employee) => {
+        const A = a[sortBy as keyof Employee];
+        const B = b[sortBy as keyof Employee];
         if (A == null && B == null) return 0;
         if (A == null) return sortDir === "desc" ? 1 : -1;
         if (B == null) return sortDir === "desc" ? -1 : 1;
@@ -44,26 +40,34 @@ export const employeeService = {
     const start = (page - 1) * size;
     const paged = filtered.slice(start, start + size);
 
-    return {
+    const result: SearchResponse<Employee> = {
       data: paged,
-      total,
-      page,
-      size
+      pagignation: {
+        page,
+        size,
+        totalItems: total,
+        totalPages: Math.ceil(total / size),
+      },
     };
+
+    return result;
   },
 
-  async create(data: any) {
+  async create(data: Employee) 
+  { 
     const res = await api.post("/employees", data);
     return res.data;
   },
 
-  async update(id: string, data: any) {
+  async update(id: number, data: Employee) {
     const res = await api.put(`/employees/${id}`, data);
     return res.data;
   },
 
-  async delete(id: string) {
+  async delete(id: number) {
     const res = await api.delete(`/employees/${id}`);
     return res.data;
   },
 };
+
+

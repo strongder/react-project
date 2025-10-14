@@ -1,9 +1,9 @@
-// import React from "react";
-// import {ProductStore} from "./Product/ProductStore.tsx";
+import React from "react";
+import { EmployeeStore } from "./EmployeeStore";
 
-// export const stores = {
-//     productStore: new  ProductStore()
-// }
+export const stores = {
+    employeeStore: new  EmployeeStore(),
+}
 
-// export const StoreContext = React.createContext(stores);
-// export const useStores = () => React.useContext(StoreContext);
+export const StoreContext = React.createContext(stores);
+export const useStores = () => React.useContext(StoreContext);

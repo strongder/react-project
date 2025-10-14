@@ -1,8 +1,9 @@
 
-import { EmployeeManagement } from "./pages/EmployeePage";
+import {  RouterProvider } from "react-router-dom";
+import { router } from "./shared/router";
 function App() {
   return (
-    <EmployeeManagement/>
+    <RouterProvider router = {router} />
   );
 }
 
