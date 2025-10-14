@@ -1,5 +1,5 @@
 import { Button, Modal } from "antd";
-import type { Employee } from "../../models";
+import type { Employee } from "../../../models";
 
 interface EmployeeDetailProps {
   employee: Employee | null;

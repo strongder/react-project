@@ -1,12 +1,12 @@
 import { useState } from "react";
-import type { Employee } from "../../models";
+import type { Employee } from "../../../models";
 import { Pagination } from "antd";
 import ViewIcon from "../../assets/icon/ViewIcon.svg";
 import EditIcon from "../../assets/icon/EditIcon.svg";
 import DeleteIcon from "../../assets/icon/DeleteIcon.svg";
-import { highlightText } from "../../utils/highlightText";
+import { highlightText } from "../../../shared/utils/highlightText";
 
-interface TableProps {
+type TableProps = {
   coloumnsData: string[];
   employees: Employee[];
   onEdit?: (employee: Employee) => void;
@@ -16,7 +16,7 @@ interface TableProps {
   loading?: boolean;
 }
 
-export const Table = ({
+export const EmployeeTable = ({
   coloumnsData,
   employees,
   onEdit,
@@ -147,7 +147,6 @@ export const Table = ({
         </table>
       </div>
 
-      {/* Pagination */}
       <div className="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
         <Pagination
           align="end"

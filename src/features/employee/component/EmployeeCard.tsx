@@ -1,10 +1,10 @@
-import type { Employee } from "../../models";
+import type { Employee } from "../../../models";
 import DeleteIcon from "../../assets/icon/DeleteIcon.svg";
 import ViewIcon from "../../assets/icon/ViewIcon.svg";
 import EditIcon from "../../assets/icon/EditIcon.svg";
 import EmailIcon from "../../assets/icon/EmailIcon.svg";
 import PhoneIcon from "../../assets/icon/PhoneIcon.svg";
-import { highlightText } from "../../utils/highlightText";
+import { highlightText } from "../../../shared/utils/highlightText";
 import React from "react";
 interface EmployeeCardProps {
   employee: Employee;

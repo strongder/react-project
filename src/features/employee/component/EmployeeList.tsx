@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Employee } from "../../models";
+import type { Employee } from "../../../models";
 import  EmployeeCard from './EmployeeCard';
 
 interface EmployeeListProps {

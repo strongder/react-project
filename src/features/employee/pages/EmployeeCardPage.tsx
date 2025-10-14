@@ -2,16 +2,16 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Header from "../components/ui/Header";
 import { Search } from "../components/ui/Search";
 import { Filter } from "../components/ui/Filter";
-import { EmployeeList } from "../components/Employee/EmployeeList";
+import { EmployeeList } from "../features/employee/component/EmployeeList";
 import type { Employee } from "../models";
-import { Table } from "../components/Employee/EmployeeTable";
+import { Table } from "../features/employee/component/EmployeeTable";
 import { Modal } from "antd";
 import { employeeService } from "../services/employeeService";
-import { EmployeeDetail } from "../components/Employee/EmployeeDetail";
+import { EmployeeDetail } from "../features/employee/component/EmployeeDetail";
 import AddIcon from "../assets/icon/AddIcon.svg";
 import { validateEmail } from "../utils/validate";
-import EmployeeStatic from "../components/Employee/EmployeeStatic";
-import EmployeeFooter from "../components/Employee/EmployeeFooter";
+import EmployeeStatic from "../features/employee/component/EmployeeStatic";
+import EmployeeFooter from "../features/employee/component/EmployeeFooter";
 interface EmployeeFilterState {
   position?: string;
 }
