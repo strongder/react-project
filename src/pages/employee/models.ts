@@ -9,15 +9,10 @@ export interface Employee {
   department: string;
   joinDate: string;
 }
-
-export interface EmployeeFormData {
-  fullName: string;
-  email: string;
-  position: string;
-  phone: string;
-  status: "active" | "inactive";
-  department: string;
-  joinDate: string;
+export interface EmployeeFilterState {
+  fullName?: string;
+  position?: string;
+  department?: string;
 }
 
 export const positions = [

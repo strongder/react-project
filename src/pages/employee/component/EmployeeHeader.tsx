@@ -1,26 +1,20 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, Input, Select } from "antd";
-import { departments, positions } from "../models";
+import { departments, positions, type EmployeeFilterState } from "../models";
 
 interface EmployeeHeaderProps {
   onSearch?: (value: string) => void;
-  searchTerm: string;
-  setSearchTerm: (value: string) => void;
-  onFilterChange?: (value: string) => void;
+  filters: EmployeeFilterState;
+  onFilterChange?: (value: EmployeeFilterState) => void;
   onAdd?: () => void;
 }
 
 const EmployeeHeader = ({
   onSearch,
-  searchTerm,
-  setSearchTerm,
+  filters,
   onFilterChange,
   onAdd,
 }: EmployeeHeaderProps) => {
-  const handleSelectChange = (value: string) => {
-    onFilterChange?.(value);
-  };
-
   return (
     <>
       <div className="flex justify-between items-center">
@@ -43,8 +37,6 @@ const EmployeeHeader = ({
         <div className="w-full lg:w-1/3">
           <Input.Search
             placeholder="Tìm kiếm theo tên"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
             onSearch={onSearch}
             allowClear
             enterButton="Tìm kiếm"
@@ -53,18 +45,24 @@ const EmployeeHeader = ({
         <div className="w-full lg:w-1/3">
           <Select
             allowClear
+            value={filters.position}
             placeholder="Lọc chức vụ"
             options={positions}
-            onChange={handleSelectChange}
+            onChange={(value) =>
+              onFilterChange && onFilterChange({ position: value })
+            }
             className="w-full"
           />
         </div>
         <div className="w-full lg:w-1/3">
           <Select
             allowClear
+            value={filters.department}
             placeholder="Lọc theo phòng ban"
             options={departments}
-            onChange={handleSelectChange}
+            onChange={(value) =>
+              onFilterChange && onFilterChange({ department: value })
+            }
             className="w-full"
           />
         </div>

@@ -9,14 +9,14 @@ import {
   StarOutlined,
 } from "@ant-design/icons";
 import type { Employee } from "../models";
-import { highlightText } from "../../../shared/utils/highlightText";
+import { NavLink } from "react-router-dom";
 interface EmployeeCardProps {
   employee: Employee;
   onEdit?: (employee: Employee) => void;
   onDelete?: (id: number) => void;
   onView?: (employee: Employee) => void;
   highlight?: boolean;
-  searchTearm?: string;
+
 }
 
 const EmployeeCard = ({
@@ -25,7 +25,7 @@ const EmployeeCard = ({
   onDelete,
   onView,
   highlight = false,
-  searchTearm = "",
+
 }: EmployeeCardProps) => {
   const cardClasses = highlight
     ? `bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg shadow-lg border-2 border-yellow-400 hover:shadow-xl transition-all duration-300 `
@@ -44,7 +44,7 @@ const EmployeeCard = ({
 
           <div>
             <h3 className="text-lg font-semibold text-gray-900">
-              {highlightText(employee?.fullName, searchTearm)}
+              {employee?.fullName}
             </h3>
             <p className="text-sm text-gray-500 font-mono">
               Mã NV: {employee?.code}
@@ -55,7 +55,7 @@ const EmployeeCard = ({
             <div className="flex gap-2 items-center justify-center text-gray-600">
               <MailOutlined style={{ color: "blue" }} />
               <span className="text-sm truncate">
-                {highlightText(employee?.email, searchTearm)}
+                {employee?.email}
               </span>
             </div>
 
@@ -96,13 +96,13 @@ const EmployeeCard = ({
         >
           <EditOutlined />
         </button>
-        <button
-          onClick={() => onEdit?.(employee)}
+        <NavLink
+          to={`/employees/edit/${employee.id}`}
           className="p-2 text-green-500 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors"
           title="Chỉnh sửa"
         >
           <FormOutlined />
-        </button>
+        </NavLink>
 
         <button
           onClick={() => onDelete?.(employee.id)}

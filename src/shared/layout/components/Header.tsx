@@ -15,8 +15,8 @@ const Header: React.FC = () => {
   const location = useLocation();
 
   const menuItems = [
-    { key: "/employees", label: "Employees", icon: <UserOutlined /> },
-    { key: "/employee-cards", label: "Products", icon: <ShopOutlined /> },
+    { key: "/employees", label: "Employee-table", icon: <UserOutlined /> },
+    { key: "/employee-cards", label: "Employee-card", icon: <ShopOutlined /> },
     { key: "/employee-detail", label: "Settings", icon: <SettingOutlined /> },
   ];
 

@@ -5,6 +5,7 @@ import { employeeService } from "../services/employee.service";
 
 export class EmployeeStore {
   employees: Employee[] = [];
+  employeeById: Employee | null = null;
   loading = false;
   error: string | null = null;
   pagination = {
@@ -17,6 +18,7 @@ export class EmployeeStore {
   constructor() {
     makeObservable(this, {
       employees: observable,
+      employeeById: observable,
       loading: observable,
       error: observable,
       pagination: observable,
@@ -105,6 +107,26 @@ export class EmployeeStore {
       runInAction(() => {
         this.error = e instanceof Error ? e.message : String(e);
       });
+    } finally {
+      runInAction(() => {
+        this.loading = false;
+      });
+    }
+  }
+  async getById(id: number){
+    this.loading = true;
+    this.error = null;
+    try {
+      const employee = await employeeService.getById(id);
+      console.log("EmployeeStore: Fetched employee:", employee);
+      runInAction(() => {
+        this.employeeById = employee;
+      });
+    } catch (e: unknown) {
+      runInAction(() => {
+        this.error = e instanceof Error ? e.message : String(e);
+      });
+      return null;
     } finally {
       runInAction(() => {
         this.loading = false;

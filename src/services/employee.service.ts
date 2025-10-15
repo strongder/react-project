@@ -55,17 +55,24 @@ export const employeeService = {
 
   async create(data: Employee) 
   { 
-    const res = await api.post("/employees", data);
+    const employee = {...data, id: Date.now()};
+    const res = await api.post("/employees", employee);
     return res.data;
   },
 
   async update(id: number, data: Employee) {
+    console.log("employeeService.update called with id:", id, "data:", data);
     const res = await api.put(`/employees/${id}`, data);
+    console.log("employeeService.update response:", res.data);
     return res.data;
   },
 
   async delete(id: number) {
     const res = await api.delete(`/employees/${id}`);
+    return res.data;
+  },
+  async getById(id: number) {
+    const res = await api.get(`/employees/${id}`);
     return res.data;
   },
 };

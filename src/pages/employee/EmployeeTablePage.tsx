@@ -1,15 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { EmployeeModal } from "./component/EmployeeModal";
-import type { Employee } from "./models";
+import type { Employee, EmployeeFilterState } from "./models";
 import { useStores } from "../../stores";
 import { initSearch, type SearchRequest } from "../../shared/models";
 import { observer } from "mobx-react-lite";
 import EmployeeHeader from "./component/EmployeeHeader";
 import { EmployeeTable } from "./component/EmployeeTable";
-interface EmployeeFilterState {
-  position?: string;
-  department?: string;
-}
+import { Modal } from "antd";
+
 const columnsData = [
   "AVATAR",
   "MÃ NV",
@@ -20,90 +18,27 @@ const columnsData = [
 ];
 
 export const EmployeeTablePage = observer(() => {
+  const { confirm } = Modal;
   const { employeeStore } = useStores();
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isAddMode, setIsAddMode] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [employeeForm, setEmployeeForm] = useState<Employee | null>(
-    null
-  );
+  const [employeeForm, setEmployeeForm] = useState<Employee>();
   const [searchQuery, setSearchQuery] = useState<SearchRequest>(initSearch);
-  const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState<EmployeeFilterState>({});
 
   useEffect(() => {
     employeeStore.search(searchQuery);
-  }, [employeeStore]);
-  const updateEmployee = async (updatedEmployee: Employee) => {
-    // try {
-    //   const updated = await employeeService.updateEmployee(
-    //     updatedEmployee.id,
-    //     updatedEmployee
-    //   );
-    //   setEmployees((prev) =>
-    //     prev.map((emp) => (emp.id === updatedEmployee.id ? updated : emp))
-    //   );
-    //   alert("Cập nhật thông tin thành công!");
-    // } catch (error) {
-    //   console.error("Error updating employee:", error);
-    //   alert("Cập nhật thông tin thất bại. Vui lòng thử lại.");
-    // }
+  }, [employeeStore, searchQuery]);
+  const updateEmployee = (updatedEmployee: Employee) => {
+    console.log("updateEmployee called with:", updatedEmployee);
+    employeeStore.update(updatedEmployee.id, updatedEmployee);
   };
 
   const addEmployee = async (newEmployee: Employee) => {
-    // try {
-    //   const created = await employeeService.createEmployee(newEmployee);
-    //   setEmployees((prev) => [created, ...prev]);
-    //   alert("Thêm nhân viên thành công!");
-    // } catch (error) {
-    //   console.error("Error adding employee:", error);
-    //   alert("Thêm nhân viên thất bại. Vui lòng thử lại.");
-    // }
+    employeeStore.create(newEmployee);
   };
-  const delelteEmployee = async (id: number) => {
-    // try {
-    //   await employeeService.deleteEmployee(id);
-    //   setEmployees((prev) => prev.filter((emp) => emp.id !== id));
-    //   alert("Xóa nhân viên thành công!");
-    // } catch (error) {
-    //   console.error("Error deleting employee:", error);
-    //   alert("Xóa nhân viên thất bại. Vui lòng thử lại.");
-    // }
-  };
-
-  const handleDelete = useCallback((id: number) => {
-    //   const employee = employees.find((emp) => emp.id === id);
-    //   const employeeName = employee?.fullName;
-    //   const confirmed = window.confirm(
-    //     `Bạn có chắc chắn muốn xóa ${employeeName}?`
-    //   );
-    //   if (confirmed) {
-    //     delelteEmployee(id);
-    //   }
-  }, []);
-  const handleFilterChange = (selectedValue: string) => {
-    setFilters({ position: selectedValue });
-
-  };
-
-  const handleEdit = useCallback((employee: Employee) => {
-    setEmployeeForm(employee);
-    setIsEditMode(true);
-    setIsAddMode(true);
-  }, []);
-
-  const handleView = useCallback((employee: Employee) => {
-    setEmployeeForm((prev) => (prev?.id !== employee.id ? employee : prev));
-    setIsViewModalOpen(true);
-  }, []);
-
-  const handleSearch = (value: string) => {
-    setSearchTerm(value);
-    const data = { ...searchQuery, key: "fullName", value };
-    employeeStore.search(data);
-  };
-
-  const handleAddEmployee = () => {
+  const resetForm = () => {
     setEmployeeForm({
       id: 0,
       fullName: "",
@@ -115,74 +50,103 @@ export const EmployeeTablePage = observer(() => {
       department: "",
       joinDate: "",
     });
+  };
+
+  const handleDelete = useCallback(
+    (id: number) => {
+      confirm({
+        title: "Xác nhận xóa",
+        content: "Bạn có chắc chắn muốn xóa nhân viên này không?",
+        onOk() {
+          employeeStore.remove(id);
+        },
+      });
+    },
+    [confirm, employeeStore]
+  );
+  const handleFilterChange = (changed: EmployeeFilterState) => {
+    const newFilters = { ...filters, ...changed };
+    setFilters(newFilters);
+    setSearchQuery((prev) => ({ ...prev, filters: newFilters }));
+  };
+
+  const handleEdit = useCallback((employee: Employee) => {
+    console.log("handleEdit called with employee:", employee);
+    setEmployeeForm(employee);
+    setIsEditMode(true);
+    setIsAddMode(true);
+  }, []);
+
+  const handleView = useCallback((employee: Employee) => {
+    setEmployeeForm((prev) => (prev?.id !== employee.id ? employee : prev));
+    setIsViewModalOpen(true);
+  }, []);
+
+  const handleSearch = (value: string) => {
+    const newFilters = { ...filters, fullName: value };
+    setFilters(newFilters);
+    setSearchQuery((prev) => ({ ...prev, filters: newFilters }));
+    employeeStore.search({ ...searchQuery, filters: newFilters });
+  };
+
+  const handleAddEmployee = () => {
+    resetForm();
     setIsEditMode(false);
     setIsAddMode(true);
   };
-  const handleFormModalOk = () => {
-    if (!employeeForm) {
-      alert("Vui lòng điền đầy đủ thông tin!");
-      return;
-    }
+  const handleFormModalOk = (employee: Employee) => {
+    
     if (isEditMode) {
-      updateEmployee(employeeForm);
+    console.log("handleFormModalOk called");
+
+      updateEmployee(employee);
     } else {
-      addEmployee(employeeForm);
+      addEmployee(employee);
     }
 
     setIsAddMode(false);
     setIsEditMode(false);
-    setEmployeeForm(null);
+    resetForm();
   };
 
   const handleViewModalClose = useCallback(() => {
     setIsViewModalOpen(false);
-    setEmployeeForm(null);
+    resetForm();
   }, []);
 
   const handleFormModalCancel = () => {
     setIsAddMode(false);
-    setEmployeeForm(null);
+    resetForm();
     setIsEditMode(false);
   };
-
-  const handlePageChange = (page: number, pageSize: number) => {
-    // page và pageSize là giá trị mới do Pagination truyền vào
-    // Gọi lại search với page và size mới
-    employeeStore.search({ ...searchQuery, page, size: pageSize });
-  }
-
-  if (employeeStore.loading) {
-    return (
-      <div className={`flex justify-center items-center py-12`}>
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-        <span className="ml-2 text-gray-600">Đang tải...</span>
-      </div>
-    );
-  }
-
-  console.log("Rendering EmployeeCardPage with employees:", employeeStore);
-
+  const handlePageChange = (page: number, pageSize?: number) => {
+    const newSearch = { ...searchQuery, page, size: pageSize };
+    setSearchQuery(newSearch);
+  };
   return (
     <>
       <div className="container m-auto  gap-4 items-start">
         <div className="header py-4">
           <EmployeeHeader
             onSearch={handleSearch}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
+            filters={filters}
             onFilterChange={handleFilterChange}
             onAdd={handleAddEmployee}
           />
         </div>
-
-        {employeeStore?.employees && (
+        {employeeStore?.loading && (
+          <div className={`flex justify-center items-center py-12`}>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+            <span className="ml-2 text-gray-600">Đang tải...</span>
+          </div>
+        )}
+        {!employeeStore.loading && employeeStore?.employees && (
           <EmployeeTable
             coloumnsData={columnsData}
             employees={employeeStore?.employees}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onView={handleView}
-            searchTearm={searchTerm}
             pagination={employeeStore?.pagination}
             onTableChange={handlePageChange}
           />
@@ -192,13 +156,12 @@ export const EmployeeTablePage = observer(() => {
           employee={employeeForm}
           isOpenView={isViewModalOpen}
           isCloseView={handleViewModalClose}
-          isAddMode={isAddMode}
           isEditMode={isEditMode}
+          isAddMode={isAddMode}
           onSaveAdd={handleFormModalOk}
           onCloseAdd={handleFormModalCancel}
         />
       </div>
-      {/* <EmployeeFooter totalEmployees={employees.length} /> */}
     </>
   );
 });

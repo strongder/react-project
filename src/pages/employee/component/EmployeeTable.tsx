@@ -7,29 +7,35 @@ import {
 } from "@ant-design/icons";
 import type { Employee } from "../models";
 import type { PaginationType } from "../../../shared/models";
-import { highlightText } from "../../../shared/utils/highlightText";
+import { NavLink } from "react-router-dom";
 
 type TableProps = {
-  coloumnsData: string[];
   employees: Employee[];
   onEdit?: (employee: Employee) => void;
   onDelete?: (id: number) => void;
   onView?: (employee: Employee) => void;
-  searchTearm?: string;
   onTableChange?: (page: number, pageSize: number) => void;
   pagination?: PaginationType;
 };
 
 export const EmployeeTable = ({
-  coloumnsData,
   employees,
   onEdit,
   onDelete,
   onView,
   onTableChange,
-  searchTearm = "",
   pagination,
 }: TableProps) => {
+  const columnsData = [
+    "AVATAR",
+    "MÃ NV",
+    "HỌ TÊN",
+    "EMAIL",
+    "SỐ ĐIỆN THOẠI",
+    "VỊ TRÍ",
+    "PHÒNG BAN",
+    "STATUS",
+  ];
   return (
     <div className={`bg-white rounded-lg shadow-sm border border-gray-200 `}>
       {/* Table */}
@@ -37,7 +43,7 @@ export const EmployeeTable = ({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              {coloumnsData?.map((coloumn, idx) => (
+              {columnsData?.map((coloumn, idx) => (
                 <th
                   key={idx}
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -70,12 +76,12 @@ export const EmployeeTable = ({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="text-sm font-medium text-gray-900">
-                    {highlightText(employee?.fullName, searchTearm)}
+                    {employee?.fullName}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="text-sm text-blue-600 hover:underline cursor-pointer">
-                    {highlightText(employee?.email, searchTearm)}
+                    {employee?.email}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -87,6 +93,16 @@ export const EmployeeTable = ({
                 <td className={` px-6 py-4 whitespace-nowrap`}>
                   <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
                     {employee?.position}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className="text-sm font-mono text-gray-900">
+                    {employee?.department}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className="text-sm font-mono text-gray-900">
+                    {employee?.status}
                   </span>
                 </td>
 
@@ -106,13 +122,15 @@ export const EmployeeTable = ({
                     >
                       <EditOutlined />
                     </button>
-                    <button
-                      onClick={() => onEdit?.(employee)}
+
+                    <NavLink
+                      to={`/employees/edit/${employee.id}`}
                       className="text-green-500 hover:text-green-600 p-1 rounded cursor-pointer"
                       title="Chỉnh sửa"
                     >
                       <FormOutlined />
-                    </button>
+                    </NavLink>
+
                     <button
                       onClick={() => {
                         if (
