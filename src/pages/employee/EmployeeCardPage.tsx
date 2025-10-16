@@ -6,7 +6,8 @@ import { useStores } from "../../stores";
 import { initSearch, type SearchRequest } from "../../shared/models";
 import { observer } from "mobx-react-lite";
 import EmployeeHeader from "./component/EmployeeHeader";
-import { Modal } from "antd";
+import { message, Modal } from "antd";
+import InfiniteScroll from "react-infinite-scroll-component";
 export const EmployeeCardPage = observer(() => {
   const { confirm } = Modal;
   const { employeeStore } = useStores();
@@ -16,10 +17,16 @@ export const EmployeeCardPage = observer(() => {
   const [employeeForm, setEmployeeForm] = useState<Employee>();
   const [searchQuery, setSearchQuery] = useState<SearchRequest>(initSearch);
   const [filters, setFilters] = useState<EmployeeFilterState>({});
-
+  const [data, setData] = useState<Employee[]>([]);
+  const hasMore =
+    employeeStore.pagination.page < employeeStore.pagination.totalPages;
   useEffect(() => {
+    console.log("Search query changed:", searchQuery);
     employeeStore.search(searchQuery);
   }, [employeeStore, searchQuery]);
+  useEffect(() => {
+    setData((prev) => [...prev, ...employeeStore.employees]);
+  }, [employeeStore.employees]);
   const updateEmployee = (updatedEmployee: Employee) => {
     employeeStore.update(updatedEmployee.id, updatedEmployee);
   };
@@ -66,9 +73,7 @@ export const EmployeeCardPage = observer(() => {
   }, []);
 
   const handleView = useCallback((employee: Employee) => {
-    setEmployeeForm((prev) =>
-      prev?.id !== employee.id ? employee : prev
-    );
+    setEmployeeForm((prev) => (prev?.id !== employee.id ? employee : prev));
     setIsViewModalOpen(true);
   }, []);
 
@@ -84,20 +89,18 @@ export const EmployeeCardPage = observer(() => {
     setIsEditMode(false);
     setIsAddMode(true);
   };
-  const handleFormModalOk = () => {
-    if (!employeeForm) {
-      alert("Vui lòng điền đầy đủ thông tin!");
-      return;
-    }
+  const handleFormModalOk = (employee: Employee) => {
     if (isEditMode) {
-      updateEmployee(employeeForm);
+      updateEmployee(employee);
+      setData(employeeStore.employees);
     } else {
-      addEmployee(employeeForm);
+      addEmployee(employee);
     }
 
     setIsAddMode(false);
     setIsEditMode(false);
     resetForm();
+    message.success("Lưu thông tin thành công");
   };
 
   const handleViewModalClose = useCallback(() => {
@@ -110,6 +113,19 @@ export const EmployeeCardPage = observer(() => {
     resetForm();
     setIsEditMode(false);
   };
+  const handleLoadMore = () => {
+    if (hasMore) {
+      console.log(searchQuery);
+      setSearchQuery((prev) => ({ ...prev, page: (prev.page ?? 1) + 1 }));
+    }
+  };
+
+  const divLoad = (
+    <div className={`flex justify-center items-center py-12`}>
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      <span className="ml-2 text-gray-600">Đang tải...</span>
+    </div>
+  );
 
   return (
     <>
@@ -123,28 +139,34 @@ export const EmployeeCardPage = observer(() => {
           />
         </div>
 
-        {employeeStore?.loading && (
-          <div className={`flex justify-center items-center py-12`}>
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-            <span className="ml-2 text-gray-600">Đang tải...</span>
-          </div>
-        )}
-        {!employeeStore.loading && (
-          <div
-            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4`}
+        {/* {!employeeStore.loading && ( */}
+        <div id="scrollableDiv" className="h-screen overflow-y-auto">
+          <InfiniteScroll
+            dataLength={data.length}
+            next={handleLoadMore}
+            hasMore={true}
+            loader={divLoad}
+            endMessage={<p className="text-center mt-4">Hết danh sách</p>}
+            scrollableTarget="scrollableDiv"
           >
-            {employeeStore?.employees?.map((employee) => (
-              <EmployeeCard
-                key={employee.id}
-                employee={employee}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onView={handleView}
-                highlight={employee.position?.toLowerCase() === "manager"}
-              />
-            ))}
-          </div>
-        )}
+            <div
+              className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4`}
+            >
+              {data.map((employee) => (
+                <EmployeeCard
+                  key={employee.id}
+                  employee={employee}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onView={handleView}
+                  highlight={employee.position?.toLowerCase() === "manager"}
+                />
+              ))}
+            </div>
+          </InfiniteScroll>
+        </div>
+
+        {/* )} */}
 
         <EmployeeModal
           employee={employeeForm}

@@ -1,11 +1,12 @@
 import { Button, Card, Form, Input, message, Select } from "antd";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useStores } from "../../stores";
 import { observer } from "mobx-react-lite";
 import type { Employee } from "./models";
 
 export const EmployeeEditPage = observer(() => {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const { employeeStore } = useStores();
   const { id } = useParams();
@@ -23,7 +24,9 @@ export const EmployeeEditPage = observer(() => {
 
   const handleSaveEmployee = (employeeForm: Employee) => {
     employeeStore.update(Number(id), employeeForm);
+    employeeStore.search({ page: 1, size: 10 });
     message.success("Cập nhật thông tin nhân viên thành công");
+    navigate(-1)
   };
 
   return (
@@ -130,7 +133,7 @@ export const EmployeeEditPage = observer(() => {
             </Form.Item>
           </div>
           <div className="flex flex-end justify-end gap-5">
-            <Button type="default" onClick={() => window.history.back()}>
+            <Button type="default" onClick={() => navigate(-1)}>
             
               Thoát
             </Button>

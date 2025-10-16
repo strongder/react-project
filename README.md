@@ -1,3 +1,39 @@
+# Giải thích về useCallback và useMemo trong dự án
+
+## useCallback
+
+`useCallback` được dùng để tạo ra một hàm ghi nhớ (memoized callback), giúp tránh việc tạo lại hàm mới mỗi lần component render. Điều này rất hữu ích khi truyền hàm xuống các component con, đặc biệt là các component con dùng React.memo hoặc có props phụ thuộc vào callback.
+
+**Ví dụ thực tế trong dự án:**
+
+Trong file `EmployeeTablePage.tsx`, các hàm như `handleEdit`, `handleDelete`, `handleView` đều dùng `useCallback` để đảm bảo hàm không bị tạo lại mỗi lần render, giúp tối ưu hiệu năng và tránh render lại không cần thiết ở các component con.
+
+```tsx
+const handleEdit = useCallback((employee: Employee) => {
+  setEmployeeForm(employee);
+  setIsEditMode(true);
+  setIsAddMode(true);
+}, []);
+```
+
+## useMemo
+
+`useMemo` được dùng để ghi nhớ giá trị tính toán (memoized value), chỉ tính lại khi các dependencies thay đổi. Thường dùng cho các phép tính phức tạp, lọc/sắp xếp dữ liệu, hoặc tạo props phức tạp truyền xuống component con.
+
+**Ví dụ thực tế trong dự án:**
+
+Nếu bạn cần lọc danh sách nhân viên theo nhiều điều kiện, có thể dùng `useMemo` để chỉ tính lại khi dữ liệu hoặc bộ lọc thay đổi:
+
+```tsx
+const filteredEmployees = useMemo(() => {
+  return employees.filter(emp => emp.status === filterStatus);
+}, [employees, filterStatus]);
+```
+
+## Tổng kết
+
+- Dùng `useCallback` cho các hàm truyền xuống component con hoặc làm event handler.
+- Dùng `useMemo` cho các giá trị tính toán phức tạp, tránh render lại không cần thiết.
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

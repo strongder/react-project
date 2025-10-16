@@ -1,5 +1,6 @@
 import { Button, Form, Input, Modal, Select } from "antd";
 import type { Employee } from "../models";
+import { formatDate } from "../../../shared/utils";
 
 interface EmployeeModalProps {
   employee?: Employee;
@@ -24,6 +25,7 @@ export const EmployeeModal = ({
   const handleSave = () => {
     form.submit();
   };
+
   return (
     <>
       <Modal
@@ -46,7 +48,9 @@ export const EmployeeModal = ({
                 <p className="text-gray-900 py-2">{employee.fullName}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-1">Mã nhân viên</p>
+                <p className="text-sm font-medium text-gray-700 mb-1">
+                  Mã nhân viên
+                </p>
                 <p className="text-gray-900 py-2">{employee.code}</p>
               </div>
             </div>
@@ -56,28 +60,48 @@ export const EmployeeModal = ({
                 <p className="text-blue-600 py-2">{employee.email}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-1">Số điện thoại</p>
+                <p className="text-sm font-medium text-gray-700 mb-1">
+                  Số điện thoại
+                </p>
                 <p className="text-gray-900 py-2">{employee.phone}</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-1">Phòng ban</p>
+                <p className="text-sm font-medium text-gray-700 mb-1">
+                  Phòng ban
+                </p>
                 <p className="text-gray-900 py-2">{employee.department}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-700 mb-1">Vị trí</p>
-                <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">{employee.position}</span>
+                <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                  {employee.position}
+                </span>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-1">Trạng thái</p>
-                <span className={`inline-block px-3 py-1 rounded-full text-sm ${employee.status === "active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>{employee.status === "active" ? "Đang làm việc" : "Nghỉ việc"}</span>
+                <p className="text-sm font-medium text-gray-700 mb-1">
+                  Trạng thái
+                </p>
+                <span
+                  className={`inline-block px-3 py-1 rounded-full text-sm ${
+                    employee.status === "active"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {employee.status === "active" ? "Đang làm việc" : "Nghỉ việc"}
+                </span>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-1">Ngày vào làm</p>
-                <p className="text-gray-900 py-2">{employee.joinDate}</p>
+                <p className="text-sm font-medium text-gray-700 mb-1">
+                  Ngày vào làm
+                </p>
+                <p className="text-gray-900 py-2">
+                  {formatDate(employee.joinDate)}
+                </p>
               </div>
             </div>
           </div>

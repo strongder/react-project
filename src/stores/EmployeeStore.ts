@@ -4,6 +4,7 @@ import type { SearchRequest, SearchResponse } from "../shared/models";
 import { employeeService } from "../services/employee.service";
 
 export class EmployeeStore {
+  employeeAll: Employee[] = [];
   employees: Employee[] = [];
   employeeById: Employee | null = null;
   loading = false;
@@ -17,6 +18,7 @@ export class EmployeeStore {
 
   constructor() {
     makeObservable(this, {
+      employeeAll: observable,
       employees: observable,
       employeeById: observable,
       loading: observable,
@@ -27,6 +29,26 @@ export class EmployeeStore {
       update: action,
       remove: action,
     });
+  }
+
+  async getAll() {
+    this.loading = true;
+    this.error = null;
+    try {
+      const allEmployees = await employeeService.getAll();
+      console.log("EmployeeStore: Fetched all employees:", allEmployees);
+      runInAction(() => {
+        this.employeeAll = allEmployees;
+      });
+    } catch (e: unknown) {
+      runInAction(() => {
+        this.error = e instanceof Error ? e.message : String(e);
+      });
+    } finally {
+      runInAction(() => {
+        this.loading = false;
+      });
+    }
   }
 
   async search(params: SearchRequest) {
@@ -113,7 +135,7 @@ export class EmployeeStore {
       });
     }
   }
-  async getById(id: number){
+  async getById(id: number) {
     this.loading = true;
     this.error = null;
     try {

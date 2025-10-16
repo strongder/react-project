@@ -8,6 +8,7 @@ import {
 import type { Employee } from "../models";
 import type { PaginationType } from "../../../shared/models";
 import { NavLink } from "react-router-dom";
+import { getStatusText, getStatusTextColor } from "../utils";
 
 type TableProps = {
   employees: Employee[];
@@ -34,7 +35,7 @@ export const EmployeeTable = ({
     "SỐ ĐIỆN THOẠI",
     "VỊ TRÍ",
     "PHÒNG BAN",
-    "STATUS",
+    "TRẠNG THÁI",
   ];
   return (
     <div className={`bg-white rounded-lg shadow-sm border border-gray-200 `}>
@@ -101,8 +102,8 @@ export const EmployeeTable = ({
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="text-sm font-mono text-gray-900">
-                    {employee?.status}
+                  <span className={`text-sm font-mono ${getStatusTextColor(employee?.status)}`}>
+                    {getStatusText(employee?.status)}
                   </span>
                 </td>
 
@@ -133,13 +134,7 @@ export const EmployeeTable = ({
 
                     <button
                       onClick={() => {
-                        if (
-                          window.confirm(
-                            "Bạn có chắc chắn muốn xóa nhân viên này?"
-                          )
-                        ) {
-                          onDelete?.(employee.id);
-                        }
+                        onDelete?.(employee.id);
                       }}
                       className="text-red-500 hover:text-red-600 p-1 rounded cursor-pointer"
                       title="Xóa"

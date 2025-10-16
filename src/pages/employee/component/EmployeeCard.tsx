@@ -10,13 +10,13 @@ import {
 } from "@ant-design/icons";
 import type { Employee } from "../models";
 import { NavLink } from "react-router-dom";
+import { getStatusText, getStatusTextColor } from "../utils";
 interface EmployeeCardProps {
   employee: Employee;
   onEdit?: (employee: Employee) => void;
   onDelete?: (id: number) => void;
   onView?: (employee: Employee) => void;
   highlight?: boolean;
-
 }
 
 const EmployeeCard = ({
@@ -25,13 +25,11 @@ const EmployeeCard = ({
   onDelete,
   onView,
   highlight = false,
-
 }: EmployeeCardProps) => {
   const cardClasses = highlight
     ? `bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg shadow-lg border-2 border-yellow-400 hover:shadow-xl transition-all duration-300 `
     : `bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300`;
 
-  console.log(`Rendering EmployeeCard for ${employee.fullName}`);
   return (
     <div className={cardClasses}>
       <div className="p-6">
@@ -54,9 +52,7 @@ const EmployeeCard = ({
           <div className="space-y-2">
             <div className="flex gap-2 items-center justify-center text-gray-600">
               <MailOutlined style={{ color: "blue" }} />
-              <span className="text-sm truncate">
-                {employee?.email}
-              </span>
+              <span className="text-sm truncate">{employee?.email}</span>
             </div>
 
             <div className="flex gap-2 items-center justify-center text-gray-600">
@@ -76,6 +72,16 @@ const EmployeeCard = ({
                 {employee?.position}
               </span>
             )}
+          </div>
+
+          <div className="flex justify-center space-y-2">
+            <div
+              className={` text-xs ${getStatusTextColor(
+                employee?.status
+              )}`}
+            >
+              {getStatusText(employee?.status) || "N/A"}
+            </div>
           </div>
         </div>
       </div>

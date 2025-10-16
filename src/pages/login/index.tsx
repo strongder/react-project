@@ -55,10 +55,10 @@ const LoginPage = () => {
 
         <p className="text-center text-gray-500 text-sm mt-4">
           <span>
-            email: <strong>admin@gmail.com</strong>
+            Email: <strong>admin@gmail.com</strong>
           </span>{" "}
           <br />
-          password: <strong>123456</strong>
+            Password: <strong>123456</strong>
           <span></span>
         </p>
       </div>

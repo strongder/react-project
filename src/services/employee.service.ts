@@ -3,7 +3,6 @@ import type { SearchRequest, SearchResponse } from "../shared/models";
 
 import { api } from "./api";
 
-
 export const employeeService = {
   async getAll() {
     const res = await api.get("/employees");
@@ -15,13 +14,18 @@ export const employeeService = {
 
     const allData = await this.getAll();
 
-    
     let filtered = allData.filter((item: Employee) => {
       return Object.entries(filters).every(([key, value]) => {
-      if (!value) return true;
-      const fieldValue = String(item[key as keyof Employee] ?? "").toLowerCase();
-      return fieldValue.includes(String(value).toLowerCase());
-    });
+        if (!value) return true;
+        
+        const fieldValue = String(
+          item[key as keyof Employee] ?? ""
+        ).toLowerCase();
+        if (key === "status") {
+          return fieldValue === String(value).toLowerCase();
+        }
+        return fieldValue.includes(String(value).toLowerCase());
+      });
     });
     if (sortBy) {
       filtered = filtered.slice().sort((a: Employee, b: Employee) => {
@@ -53,17 +57,13 @@ export const employeeService = {
     return result;
   },
 
-  async create(data: Employee) 
-  { 
-    const employee = {...data, id: Date.now()};
-    const res = await api.post("/employees", employee);
+  async create(data: Employee) {
+    const res = await api.post("/employees", data);
     return res.data;
   },
 
   async update(id: number, data: Employee) {
-    console.log("employeeService.update called with id:", id, "data:", data);
     const res = await api.put(`/employees/${id}`, data);
-    console.log("employeeService.update response:", res.data);
     return res.data;
   },
 
@@ -76,5 +76,3 @@ export const employeeService = {
     return res.data;
   },
 };
-
-

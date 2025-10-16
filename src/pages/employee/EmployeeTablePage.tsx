@@ -6,16 +6,7 @@ import { initSearch, type SearchRequest } from "../../shared/models";
 import { observer } from "mobx-react-lite";
 import EmployeeHeader from "./component/EmployeeHeader";
 import { EmployeeTable } from "./component/EmployeeTable";
-import { Modal } from "antd";
-
-const columnsData = [
-  "AVATAR",
-  "MÃ NV",
-  "HỌ TÊN",
-  "EMAIL",
-  "SỐ ĐIỆN THOẠI",
-  "VỊ TRÍ",
-];
+import { message, Modal } from "antd";
 
 export const EmployeeTablePage = observer(() => {
   const { confirm } = Modal;
@@ -31,7 +22,6 @@ export const EmployeeTablePage = observer(() => {
     employeeStore.search(searchQuery);
   }, [employeeStore, searchQuery]);
   const updateEmployee = (updatedEmployee: Employee) => {
-    console.log("updateEmployee called with:", updatedEmployee);
     employeeStore.update(updatedEmployee.id, updatedEmployee);
   };
 
@@ -71,7 +61,6 @@ export const EmployeeTablePage = observer(() => {
   };
 
   const handleEdit = useCallback((employee: Employee) => {
-    console.log("handleEdit called with employee:", employee);
     setEmployeeForm(employee);
     setIsEditMode(true);
     setIsAddMode(true);
@@ -97,8 +86,6 @@ export const EmployeeTablePage = observer(() => {
   const handleFormModalOk = (employee: Employee) => {
     
     if (isEditMode) {
-    console.log("handleFormModalOk called");
-
       updateEmployee(employee);
     } else {
       addEmployee(employee);
@@ -107,6 +94,7 @@ export const EmployeeTablePage = observer(() => {
     setIsAddMode(false);
     setIsEditMode(false);
     resetForm();
+    message.success("Lưu thông tin thành công")
   };
 
   const handleViewModalClose = useCallback(() => {
@@ -142,7 +130,6 @@ export const EmployeeTablePage = observer(() => {
         )}
         {!employeeStore.loading && employeeStore?.employees && (
           <EmployeeTable
-            coloumnsData={columnsData}
             employees={employeeStore?.employees}
             onEdit={handleEdit}
             onDelete={handleDelete}

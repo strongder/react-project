@@ -4,8 +4,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {
   UserOutlined,
   ShopOutlined,
-//   DashboardOutlined,
-  SettingOutlined,
+  LogoutOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 
 const { Header: AntHeader } = Layout;
@@ -15,16 +15,18 @@ const Header: React.FC = () => {
   const location = useLocation();
 
   const menuItems = [
+    {key: "/home", label: "Home", icon: <HomeOutlined />},
     { key: "/employees", label: "Employee-table", icon: <UserOutlined /> },
     { key: "/employee-cards", label: "Employee-card", icon: <ShopOutlined /> },
-    { key: "/employee-detail", label: "Settings", icon: <SettingOutlined /> },
   ];
 
   return (
     <AntHeader className="flex items-center">
-      <div className="text-white font-bold text-lg mr-6 cursor-pointer"
-           onClick={() => navigate("/")}>
-        MyApp
+      <div
+        className="text-white font-bold text-lg mr-10 cursor-pointer"
+        onClick={() => navigate("/")}
+      >
+        HR Management
       </div>
       <Menu
         theme="dark"
@@ -33,6 +35,12 @@ const Header: React.FC = () => {
         items={menuItems}
         onClick={({ key }) => navigate(key)}
         style={{ flex: 1, minWidth: 0 }}
+      />
+      <LogoutOutlined
+        style={{color: "white", fontSize: "20px"}}
+        onClick={() => {
+          navigate("/login");
+        }}
       />
     </AntHeader>
   );

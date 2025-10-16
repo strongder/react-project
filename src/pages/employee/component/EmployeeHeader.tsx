@@ -1,6 +1,6 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, Input, Select } from "antd";
-import { departments, positions, type EmployeeFilterState } from "../models";
+import { departments, positions, status, type EmployeeFilterState } from "../models";
 
 interface EmployeeHeaderProps {
   onSearch?: (value: string) => void;
@@ -42,7 +42,7 @@ const EmployeeHeader = ({
             enterButton="Tìm kiếm"
           />
         </div>
-        <div className="w-full lg:w-1/3">
+        <div className="w-full lg:w-1/4">
           <Select
             allowClear
             value={filters.position}
@@ -54,7 +54,7 @@ const EmployeeHeader = ({
             className="w-full"
           />
         </div>
-        <div className="w-full lg:w-1/3">
+        <div className="w-full lg:w-1/4">
           <Select
             allowClear
             value={filters.department}
@@ -62,6 +62,17 @@ const EmployeeHeader = ({
             options={departments}
             onChange={(value) =>
               onFilterChange && onFilterChange({ department: value })
+            }
+            className="w-full"
+          />
+        </div><div className="w-full lg:w-1/4">
+          <Select
+            allowClear
+            value={filters.status}
+            placeholder="Lọc trạng thái"
+            options={status}
+            onChange={(value) =>
+              onFilterChange && onFilterChange({ status: value })
             }
             className="w-full"
           />
