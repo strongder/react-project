@@ -27,8 +27,8 @@ const EmployeeCard = ({
   highlight = false,
 }: EmployeeCardProps) => {
   const cardClasses = highlight
-    ? `bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg shadow-lg border-2 border-yellow-400 hover:shadow-xl transition-all duration-300 `
-    : `bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300`;
+    ? `bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg shadow-lg border-2 border-yellow-400 hover:shadow-xl transition-all duration-300 dark:bg-none dark:bg-gray-900 dark:border-yellow-600 dark:shadow-md`
+    : `bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300 dark:bg-gray-900 dark:border-gray-700`;
 
   return (
     <div className={cardClasses}>
@@ -41,21 +41,21 @@ const EmployeeCard = ({
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               {employee?.fullName}
             </h3>
-            <p className="text-sm text-gray-500 font-mono">
+            <p className="text-sm text-gray-500 font-mono dark:text-gray-300">
               Mã NV: {employee?.code}
             </p>
           </div>
 
           <div className="space-y-2">
-            <div className="flex gap-2 items-center justify-center text-gray-600">
+            <div className="flex gap-2 items-center justify-center text-gray-600 dark:text-gray-300">
               <MailOutlined style={{ color: "blue" }} />
               <span className="text-sm truncate">{employee?.email}</span>
             </div>
 
-            <div className="flex gap-2 items-center justify-center text-gray-600">
+            <div className="flex gap-2 items-center justify-center text-gray-600 dark:text-gray-300">
               <PhoneOutlined style={{ color: "red" }} />
               <span className="text-sm font-mono">{employee?.phone}</span>
             </div>
@@ -68,7 +68,7 @@ const EmployeeCard = ({
                 {employee?.position}
               </span>
             ) : (
-              <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+              <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium dark:bg-blue-900/30 dark:text-blue-300">
                 {employee?.position}
               </span>
             )}
@@ -86,10 +86,10 @@ const EmployeeCard = ({
         </div>
       </div>
 
-      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-center space-x-2">
+      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-center space-x-2 dark:bg-gray-800 dark:border-gray-700">
         <button
           onClick={() => onView?.(employee)}
-          className="p-2 text-blue-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+          className="p-2 text-blue-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors dark:hover:bg-blue-900/20"
           title="Xem chi tiết"
         >
           <EyeOutlined />
@@ -97,14 +97,14 @@ const EmployeeCard = ({
 
         <button
           onClick={() => onEdit?.(employee)}
-          className="p-2 text-green-500 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors"
+          className="p-2 text-green-500 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors dark:hover:bg-green-900/20"
           title="Chỉnh sửa"
         >
           <EditOutlined />
         </button>
         <NavLink
           to={`/employees/edit/${employee.id}`}
-          className="p-2 text-green-500 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors"
+          className="p-2 text-green-500 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors dark:hover:bg-green-900/20"
           title="Chỉnh sửa"
         >
           <FormOutlined />
@@ -112,7 +112,7 @@ const EmployeeCard = ({
 
         <button
           onClick={() => onDelete?.(employee.id)}
-          className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+          className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors dark:hover:bg-red-900/20"
           title="Xóa"
         >
           <DeleteOutlined />

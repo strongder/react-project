@@ -19,10 +19,10 @@ const EmployeeHeader = ({
     <>
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Danh sách nhân viên
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-gray-600 mt-1 dark:text-gray-400">
             Quản lý thông tin nhân viên trong hệ thống
           </p>
         </div>
@@ -33,8 +33,8 @@ const EmployeeHeader = ({
         </div>
       </div>
 
-      <div className="flex items-end flex-col justify-between lg:flex-row gap-16 p-6  bg-white rounded-lg shadow-sm border border-gray-200 mt-4">
-        <div className="w-full lg:w-1/3">
+      <div className="flex items-end flex-col justify-between lg:flex-row gap-16 p-6  bg-white rounded-lg shadow-sm border border-gray-200 mt-4 dark:bg-black dark:border-gray-700">
+        <div className="w-full lg:w-1/3 dark:text-white">
           <Input.Search
             placeholder="Tìm kiếm theo tên"
             onSearch={onSearch}

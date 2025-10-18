@@ -1,5 +1,5 @@
 import { Button, Form, Input, Modal, Select } from "antd";
-import type { Employee } from "../models";
+import { departments, positions, status, type Employee } from "../models";
 import { formatDate } from "../../../shared/utils";
 
 interface EmployeeModalProps {
@@ -180,10 +180,11 @@ export const EmployeeModal = ({
               rules={[{ required: true, message: "Vui lòng chọn vị trí" }]}
             >
               <Select placeholder="Chọn vị trí">
-                <Select.Option value="Developer">Developer</Select.Option>
-                <Select.Option value="Designer">Designer</Select.Option>
-                <Select.Option value="Manager">Manager</Select.Option>
-                <Select.Option value="Tester">Tester</Select.Option>
+                {positions.map((pos) => (
+                  <Select.Option key={pos.value} value={pos.value}>
+                    {pos.label}
+                  </Select.Option>
+                ))}
               </Select>
             </Form.Item>
             <Form.Item
@@ -192,10 +193,11 @@ export const EmployeeModal = ({
               rules={[{ required: true, message: "Vui lòng chọn phòng ban" }]}
             >
               <Select placeholder="Chọn phòng ban">
-                <Select.Option value="hr">HR</Select.Option>
-                <Select.Option value="it">IT</Select.Option>
-                <Select.Option value="finance">Finance</Select.Option>
-                <Select.Option value="marketing">Marketing</Select.Option>
+                {departments.map((dept) => (
+                  <Select.Option key={dept.value} value={dept.value}>
+                    {dept.label}
+                  </Select.Option>
+                ))}
               </Select>
             </Form.Item>
           </div>
@@ -206,8 +208,11 @@ export const EmployeeModal = ({
               rules={[{ required: true, message: "Vui lòng chọn trạng thái" }]}
             >
               <Select placeholder="Chọn trạng thái">
-                <Select.Option value="active">Đang làm việc</Select.Option>
-                <Select.Option value="inactive">Nghỉ việc</Select.Option>
+                {status.map((stat) => (
+                  <Select.Option key={stat.value} value={stat.value}>
+                    {stat.label}
+                  </Select.Option>
+                ))}
               </Select>
             </Form.Item>
             <Form.Item

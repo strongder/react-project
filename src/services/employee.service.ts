@@ -29,13 +29,18 @@ export const employeeService = {
     });
     if (sortBy) {
       filtered = filtered.slice().sort((a: Employee, b: Employee) => {
-        const A = a[sortBy as keyof Employee];
-        const B = b[sortBy as keyof Employee];
+        const A = a[sortBy as keyof Employee] as unknown as string | number | null | undefined;
+        const B = b[sortBy as keyof Employee] as unknown as string | number | null | undefined;
         if (A == null && B == null) return 0;
         if (A == null) return sortDir === "desc" ? 1 : -1;
         if (B == null) return sortDir === "desc" ? -1 : 1;
-        if (A < B) return sortDir === "desc" ? 1 : -1;
-        if (A > B) return sortDir === "desc" ? -1 : 1;
+
+        if (typeof A === "string" && typeof B === "string") {
+          const res = A.localeCompare(B, "vi", { sensitivity: "base" });
+          return sortDir === "desc" ? -res : res;
+        }
+        if (A < (B as any)) return sortDir === "desc" ? 1 : -1;
+        if (A > (B as any)) return sortDir === "desc" ? -1 : 1;
         return 0;
       });
     }

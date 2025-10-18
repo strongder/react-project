@@ -87,6 +87,7 @@ export class EmployeeStore {
       const newItem = await employeeService.create(data);
       runInAction(() => {
         this.employees.push(newItem);
+        this.pagination.totalItems += 1;
       });
     } catch (e: unknown) {
       runInAction(() => {
@@ -124,6 +125,7 @@ export class EmployeeStore {
       await employeeService.delete(id);
       runInAction(() => {
         this.employees = this.employees.filter((e) => e.id !== id);
+        this.pagination.totalItems -= 1;
       });
     } catch (e: unknown) {
       runInAction(() => {

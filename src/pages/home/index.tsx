@@ -27,9 +27,9 @@ const HomeDashboard = observer(() => {
   const departmentStats = employeeAll
     .filter((emp) => emp.status === "active")
     .reduce((acc, emp) => {
-    acc[emp.department] = (acc[emp.department] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+      acc[emp.department] = (acc[emp.department] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
 
   const departmentData = Object.entries(departmentStats).map(
     ([dept, count]) => ({
@@ -55,8 +55,8 @@ const HomeDashboard = observer(() => {
   );
 
   return (
-    <div className="container mx-auto py-4">
-      <h1 className="text-2xl font-bold mb-6 text-black-700">
+    <div className="container mx-auto py-4 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white transition-colors duration-300">
         Dashboard nhân viên
       </h1>
 

@@ -49,6 +49,7 @@ export const EmployeeTablePage = observer(() => {
         content: "Bạn có chắc chắn muốn xóa nhân viên này không?",
         onOk() {
           employeeStore.remove(id);
+          message.success("Xóa nhân viên thành công");
         },
       });
     },
@@ -111,6 +112,12 @@ export const EmployeeTablePage = observer(() => {
     const newSearch = { ...searchQuery, page, size: pageSize };
     setSearchQuery(newSearch);
   };
+  const handleSortChange = useCallback(
+    (sortBy: string, sortDir: "asc" | "desc") => {
+      setSearchQuery((prev) => ({ ...prev, page: 1, sortBy, sortDir }));
+    },
+    []
+  );
   return (
     <>
       <div className="container m-auto  gap-4 items-start">
@@ -136,6 +143,7 @@ export const EmployeeTablePage = observer(() => {
             onView={handleView}
             pagination={employeeStore?.pagination}
             onTableChange={handlePageChange}
+            onSortChange={handleSortChange}
           />
         )}
 

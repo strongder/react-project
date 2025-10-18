@@ -18,15 +18,14 @@ export const EmployeeCardPage = observer(() => {
   const [searchQuery, setSearchQuery] = useState<SearchRequest>(initSearch);
   const [filters, setFilters] = useState<EmployeeFilterState>({});
   const [data, setData] = useState<Employee[]>([]);
-  const hasMore =
-    employeeStore.pagination.page < employeeStore.pagination.totalPages;
+  const hasMore = employeeStore.pagination.page < employeeStore.pagination.totalPages;
   useEffect(() => {
-    console.log("Search query changed:", searchQuery);
     employeeStore.search(searchQuery);
   }, [employeeStore, searchQuery]);
   useEffect(() => {
-    setData((prev) => [...prev, ...employeeStore.employees]);
-  }, [employeeStore.employees]);
+    const isFirstPage = (searchQuery.page ?? 1) === 1;
+    setData((prev) => (isFirstPage ? employeeStore.employees : [...prev, ...employeeStore.employees]));
+  }, [employeeStore.employees, searchQuery.page]);
   const updateEmployee = (updatedEmployee: Employee) => {
     employeeStore.update(updatedEmployee.id, updatedEmployee);
   };
@@ -63,7 +62,9 @@ export const EmployeeCardPage = observer(() => {
   const handleFilterChange = (changed: EmployeeFilterState) => {
     const newFilters = { ...filters, ...changed };
     setFilters(newFilters);
-    setSearchQuery((prev) => ({ ...prev, filters: newFilters }));
+    // Reset list and back to page 1 when filters change
+    setData([]);
+    setSearchQuery((prev) => ({ ...prev, page: 1, filters: newFilters }));
   };
 
   const handleEdit = useCallback((employee: Employee) => {
@@ -80,8 +81,9 @@ export const EmployeeCardPage = observer(() => {
   const handleSearch = (value: string) => {
     const newFilters = { ...filters, fullName: value };
     setFilters(newFilters);
-    setSearchQuery((prev) => ({ ...prev, filters: newFilters }));
-    employeeStore.search({ ...searchQuery, filters: newFilters });
+    // Reset list and back to page 1 for new search
+    setData([]);
+    setSearchQuery((prev) => ({ ...prev, page: 1, filters: newFilters }));
   };
 
   const handleAddEmployee = () => {
@@ -115,7 +117,6 @@ export const EmployeeCardPage = observer(() => {
   };
   const handleLoadMore = () => {
     if (hasMore) {
-      console.log(searchQuery);
       setSearchQuery((prev) => ({ ...prev, page: (prev.page ?? 1) + 1 }));
     }
   };
@@ -144,7 +145,7 @@ export const EmployeeCardPage = observer(() => {
           <InfiniteScroll
             dataLength={data.length}
             next={handleLoadMore}
-            hasMore={true}
+            hasMore={hasMore}
             loader={divLoad}
             endMessage={<p className="text-center mt-4">Hết danh sách</p>}
             scrollableTarget="scrollableDiv"
@@ -178,7 +179,6 @@ export const EmployeeCardPage = observer(() => {
           onCloseAdd={handleFormModalCancel}
         />
       </div>
-      {/* <EmployeeFooter totalEmployees={employees.length} /> */}
     </>
   );
 });
