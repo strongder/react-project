@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_BASE_URL = 'https://68db5b6123ebc87faa32b28e.mockapi.io/api/employee';
+const API_BASE_URL = 'https://68db5b6123ebc87faa32b28e.mockapi.io/api';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
